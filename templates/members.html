@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Members</title>
+</head>
+<body>
+    <h1>👥 Members</h1>
+    <a href="/">Back to Dashboard</a>
+    <hr>
+
+    <h3>Register Member</h3>
+    <form id="registerForm">
+        Member ID: <input type="text" id="member_id"><br><br>
+        Name: <input type="text" id="name"><br><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <p id="message"></p>
+
+    <hr>
+    <h3>All Members</h3>
+    <ul>
+        {% for member in members %}
+            <li>
+                {{ member.member_id }} - {{ member.name }} 
+                (Issued: {{ member.issued_books|length }})
+            </li>
+        {% endfor %}
+    </ul>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/api/members/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            member_id: document.getElementById("member_id").value,
+            name: document.getElementById("name").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("message").innerText = data.message;
+        location.reload();
+    });
+});
+</script>
+
+</body>
+</html>
+
