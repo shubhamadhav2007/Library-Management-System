@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Books</title>
+</head>
+<body>
+    <h1>📚 Books</h1>
+    <a href="/">Back to Dashboard</a>
+    <hr>
+
+    <h3>Add Book</h3>
+    <form id="addBookForm">
+        ID: <input type="text" id="book_id"><br><br>
+        Title: <input type="text" id="title"><br><br>
+        Author: <input type="text" id="author"><br><br>
+        Quantity: <input type="number" id="quantity"><br><br>
+        <button type="submit">Add Book</button>
+    </form>
+
+    <p id="message"></p>
+
+    <hr>
+    <h3>All Books</h3>
+    <ul>
+        {% for book in books %}
+            <li>
+                {{ book.book_id }} - {{ book.title }} by {{ book.author }} (Qty: {{ book.quantity }})
+            </li>
+        {% endfor %}
+    </ul>
+
+<script>
+document.getElementById("addBookForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/api/books/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            book_id: document.getElementById("book_id").value,
+            title: document.getElementById("title").value,
+            author: document.getElementById("author").value,
+            quantity: document.getElementById("quantity").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("message").innerText = data.message;
+        location.reload();
+    });
+});
+</script>
+
+</body>
+</html>
