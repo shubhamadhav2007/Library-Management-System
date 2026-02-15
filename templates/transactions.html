@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transactions</title>
+</head>
+<body>
+    <h1>📝 Transactions</h1>
+    <a href="/">Back to Dashboard</a>
+    <hr>
+
+    <h3>Issue Book</h3>
+    <form id="issueForm">
+        Member ID: <input type="text" id="issue_member"><br><br>
+        Book ID: <input type="text" id="issue_book"><br><br>
+        <button type="submit">Issue</button>
+    </form>
+
+    <h3>Return Book</h3>
+    <form id="returnForm">
+        Member ID: <input type="text" id="return_member"><br><br>
+        Book ID: <input type="text" id="return_book"><br><br>
+        <button type="submit">Return</button>
+    </form>
+
+    <p id="message"></p>
+
+    <hr>
+    <h3>All Transactions</h3>
+    <ul>
+        {% for t in transactions %}
+            <li>
+                {{ t.member_id }} {{ t.action }} {{ t.book_id }} 
+                at {{ t.timestamp }}
+            </li>
+        {% endfor %}
+    </ul>
+
+<script>
+document.getElementById("issueForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    fetch("/api/books/issue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            member_id: document.getElementById("issue_member").value,
+            book_id: document.getElementById("issue_book").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("message").innerText = data.message;
+        location.reload();
+    });
+});
+
+document.getElementById("returnForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    fetch("/api/books/return", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            member_id: document.getElementById("return_member").value,
+            book_id: document.getElementById("return_book").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("message").innerText = data.message;
+        location.reload();
+    });
+});
+</script>
+
+</body>
+</html>
